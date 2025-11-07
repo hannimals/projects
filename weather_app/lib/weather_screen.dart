@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'forecast_forhours.dart';
+import 'aditional_info_item.dart';
 
 class WeatherScreen extends StatelessWidget {
   const WeatherScreen({super.key});
@@ -35,7 +37,7 @@ class WeatherScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: Card(
-                color: const Color.fromARGB(255, 79, 117, 128),
+                color: const Color.fromARGB(255, 61, 61, 61),
                 elevation: 10,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -66,13 +68,71 @@ class WeatherScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Placeholder(
-              //weather forecast
-              fallbackHeight: 150,
+            //weather forecast
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Weather forecast',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              ),
+            ),
+            const SizedBox(height: 5),
+            const SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Houlyforecascards(),
+                  Houlyforecascards(),
+                  Houlyforecascards(),
+                  Houlyforecascards(),
+                  Houlyforecascards(),
+                  Houlyforecascards(),
+                  Houlyforecascards(),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
-            //aditional info
-            Placeholder(fallbackHeight: 100),
+            const Text(
+              'Additional Information',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 8),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                AdditionalInfoItem(
+                  icon: Icons.water_drop,
+                  label: 'Humidity',
+                  value: '91',
+                ),
+                AdditionalInfoItem(
+                  icon: Icons.air,
+                  label: 'Wind speed',
+                  value: '7.5',
+                ),
+                AdditionalInfoItem(
+                  icon: Icons.beach_access,
+                  label: 'Pressure',
+                  value: '1000',
+                ),
+              ],
+            ),
+
+            //last app bar
+            AppBar(
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.map),
+                  onPressed: () {
+                    if (kDebugMode) {
+                      print('object');
+                    }
+                  },
+                ),
+              ],
+            ),
           ],
         ),
       ),
