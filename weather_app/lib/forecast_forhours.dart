@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
 class Houlyforecascards extends StatelessWidget {
-  const Houlyforecascards({super.key});
+  final String time;
+  final String temp;
+  final IconData icon;
+  const Houlyforecascards({
+    super.key,
+    required this.time,
+    required this.temp,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,16 +21,21 @@ class Houlyforecascards extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
-          child: const Column(
+          child: Column(
             children: [
               Text(
-                '3:00',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                time,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              SizedBox(height: 5),
-              Icon(Icons.cloud, size: 40),
-              SizedBox(height: 2),
-              Text('30'),
+              const SizedBox(height: 5),
+              Icon(icon, size: 40),
+              const SizedBox(height: 2),
+              Text(temp),
             ],
           ),
         ),
