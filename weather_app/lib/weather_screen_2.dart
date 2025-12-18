@@ -17,8 +17,8 @@ class WeatherScreenSeccond extends StatefulWidget {
 }
 
 class _WeatherScreenSeccondState extends State<WeatherScreenSeccond> {
-  static const String citynameInitial = 'Bucaramanga';
-  static const String countrynameInitial = 'Colombia';
+  static const String citynameInitial = 'Copenhagen';
+  static const String countrynameInitial = 'Denmark';
   static final String _apiurl =
       'https://api.openweathermap.org/data/2.5/forecast?q=$citynameInitial,$countrynameInitial&APPID=$keyAPI&units=metric';
   late Future<Map<String, dynamic>> weatherFuture;

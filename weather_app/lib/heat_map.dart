@@ -89,6 +89,7 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
     return cityTemps;
   }
   /*
+  this was our bulk trial
   
   for (int i = 0; i < cities.length; i += 20) {
       // we create a for loop to split the cities of a country in lists of 20
@@ -192,9 +193,7 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
           }
 
           if (snapshot.data == List.empty()) {
-            return const Center(
-              child: Text('empty list'),
-            ); //this isnt printing currently
+            return const Center(child: Text('empty list'));
           }
 
           final markerList = snapshot.data!;
@@ -210,7 +209,8 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.hannimals.weatherapp',
+                userAgentPackageName:
+                    'com.hannimals.weatherapp', //we had to create an account to avoid using subdomains
               ),
               Opacity(
                 opacity: 0.9,
