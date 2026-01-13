@@ -1,11 +1,12 @@
 # yn_arround_the_world
 
-A new Flutter project.
+y/n Arround the world
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is an app meant to learn about different countries in a funny way
 
+Tutorials and guides:
 A few resources to get you started if this is your first Flutter project:
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)

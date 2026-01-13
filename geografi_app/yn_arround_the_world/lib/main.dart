@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:yn_arround_the_world/start.dart';
-import 'main_display_shop.dart';
+import 'package:yn_arround_the_world/main_menu.dart';
+import 'package:yn_arround_the_world/map.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,15 +11,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Shop',
+      title: 'y/n arround the world',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 113, 45, 230),
-        ),
-      ),
-
-      home: const GeografiApp(),
+      theme: ThemeData.light(useMaterial3: true),
+      home: MainMenu(),
     );
   }
 }
