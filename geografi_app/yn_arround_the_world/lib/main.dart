@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:yn_arround_the_world/main_menu.dart';
-import 'package:yn_arround_the_world/map.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:yn_arround_the_world/main_menu.dart';
 import 'package:yn_arround_the_world/marker_blueprint.dart';
 import 'package:yn_arround_the_world/settings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GeografiApp extends StatefulWidget {
   const GeografiApp({super.key});
@@ -13,6 +13,13 @@ class GeografiApp extends StatefulWidget {
 }
 
 class _GeografiAppState extends State<GeografiApp> {
+  innitState() {
+    setState(() {
+      BuildContext;
+    });
+    super.initState();
+  }
+
   final List<TravelLocation> travelSpots = [
     TravelLocation(
       country: 'spain',
@@ -121,7 +128,7 @@ class _GeografiAppState extends State<GeografiApp> {
               style: TextStyle(fontSize: 35, fontWeight: FontWeight.w400),
             ),*/
             SizedBox(
-              height: 560,
+              height: 500,
               width: double.maxFinite,
               child: FlutterMap(
                 options: MapOptions(
@@ -161,7 +168,7 @@ class _GeografiAppState extends State<GeografiApp> {
                           onDoubleTap: () {
                             showDialog(
                               context: context,
-                              builder: (context) => AlertDialog(
+                              builder: (dialogcontext) => AlertDialog(
                                 //this is the popup that appears when clicking the marker
                                 title: Text(spot.city),
                                 content: Text(
@@ -171,24 +178,50 @@ class _GeografiAppState extends State<GeografiApp> {
                                 ),
                                 actions: [
                                   TextButton(
-                                    onPressed: () => Navigator.pop(context),
+                                    onPressed: () =>
+                                        Navigator.pop(dialogcontext),
                                     child: const Text('close'),
                                   ),
                                   TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
+                                    onPressed: () async {
+                                      final BuildContext currentcontext =
+                                          context;
+
+                                      Navigator.pop(dialogcontext);
                                       ScaffoldMessenger.of(
-                                        //shows a little message at the bottom of the screen
-                                        context,
+                                        currentcontext, //shows a little message at the bottom of the screen
                                       ).showSnackBar(
                                         // this is the message that appears when pressing tour
-                                        SnackBar(
+                                        const SnackBar(
                                           content: Text(
                                             'Starting Virtual tour...',
                                           ),
                                         ),
                                       );
+                                      final Uri url = Uri.parse(
+                                        'https://hannimals777.itch.io/yn-arrownd-the-world-egypt',
+                                      );
+                                      if (await canLaunchUrl(url)) {
+                                        if (!mounted) return;
+
+                                        await launchUrl(
+                                          url,
+                                          mode: LaunchMode.externalApplication,
+                                        );
+                                      } else {
+                                        if (!mounted) return;
+                                        ScaffoldMessenger.of(
+                                          currentcontext,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              'Could not launch tour',
+                                            ),
+                                          ),
+                                        );
+                                      }
                                     },
+
                                     child: const Text('Tour'),
                                   ),
                                 ],
@@ -209,9 +242,6 @@ class _GeografiAppState extends State<GeografiApp> {
               ),
             ),
           ],
-          // lav map ting (open streetmap -> flutter map)
-          // lav en liste af lande og for hver land lav at den indeholder de mest kendte byer og landmarker
-          //
         ),
       ),
     );

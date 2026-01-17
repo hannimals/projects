@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:yn_arround_the_world/main_menu.dart';
 //give the user option to change the theme
 // give option to change game mode (CEO/Y_N)
 //sign in/ out T_T

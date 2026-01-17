@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class TravelLocation {
   final String country;
   final String city;
