@@ -109,7 +109,7 @@ class _MainMenuState extends State<MainMenu> {
                           padding: const EdgeInsets.all(8.0),
                           child: SizedBox(
                             height: 60,
-                            width: double.infinity,
+                            width: double.maxFinite,
                             child: Text(
                               'Im Hirata nice to meet you! let me show you around here. This is the main menu, here you can decide to customize your avatar, chat with your newly found friends by pressing on your global friend list... Or take a tour to the map window to make more friends!! good luck consider me as your first friend, you can find me in your friend list whenever you want to chat.',
                             ),
@@ -123,32 +123,39 @@ class _MainMenuState extends State<MainMenu> {
                             textDirection: TextDirection.ltr,
 
                             children: [
-                              TextFormField(
-                                controller:
-                                    _namefielcontroller, // this is to validate input
-                                cursorHeight: 2.0,
-                                cursorWidth: 2.0,
+                              SizedBox(
+                                height: 50,
+                                width: 250,
+                                child: TextFormField(
+                                  controller:
+                                      _namefielcontroller, // this is to validate input
+                                  cursorHeight: 2.0,
+                                  cursorWidth: 2.0,
 
-                                cursorColor: Colors.blue,
+                                  cursorColor: Colors.blue,
 
-                                maxLength: 20,
-                                decoration: InputDecoration(
-                                  labelText: 'Enter your name',
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 1,
-                                      color: Colors.black,
+                                  maxLength: 20,
+                                  decoration: InputDecoration(
+                                    focusedBorder: InputBorder.none,
+
+                                    labelText: 'Enter your name',
+                                    labelStyle: TextStyle(color: Colors.black),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        width: 0.5,
+                                        color: Colors.black,
+                                      ),
                                     ),
                                   ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your name';
+                                    }
+                                    return null;
+                                  },
                                 ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your name';
-                                  }
-                                  return null;
-                                },
                               ),
-
+                              SizedBox(width: 600),
                               TextButton(
                                 onPressed: () {
                                   if (_formkey.currentState!.validate()) {
