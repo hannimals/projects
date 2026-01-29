@@ -11,24 +11,64 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
-  String initialText = 'Welcome! whats your name?';
+  int _step = 0;
   String usersName = '';
   final TextEditingController _namefielcontroller = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-
+  late final List<String> _tutorialDialogs;
   @override
   void initState() {
-    setState(() {
-      initialText;
-    });
     super.initState();
+    _tutorialDialogs = [
+      'Welcome! whats your name?',
+      'Nice to meet you \$usersName, welcome to planet earth',
+      'let me show you around here.',
+      'This is the main menu, here you can decide to customize your avatar by pressing the account button', //if readerText == TutorialDilogs[2] disable all icons ecxept for account
+      'You can also acsses your newly found friends by pressing on your global friend list',
+      'To start press the Earth',
+    ];
   }
 
   @override
   void dispose() {
     _namefielcontroller.dispose();
-    super
-        .dispose(); //the dispose function unsuscribes from connections and listeners so our apps memory is better
+    super.dispose();
+    //the dispose function unsuscribes from connections and listeners so our apps memory is better
+  }
+
+  String get _currentText {
+    if (_step >= _tutorialDialogs.length) return '';
+    String text = _tutorialDialogs[_step];
+    if (_step >= 1) {
+      text = text.replaceAll('\$usersName', usersName);
+    }
+    return text;
+  }
+
+  // hide input after name is set (step > 0)
+  bool get _showNameInput => _step == 0;
+
+  // hide whole dialog after last step
+  bool get _showDialog => _step < _tutorialDialogs.length;
+
+  void _nextDialog() {
+    if (_step == 0) {
+      if (_formkey.currentState!.validate()) {
+        setState(() {
+          usersName = _namefielcontroller.text
+              .trim(); //the trim removes space from the input
+          _step++;
+        });
+      } else if (_step < _tutorialDialogs.length - 1) {
+        setState(() {
+          _step++;
+        });
+      }
+    } else {
+      setState(() {
+        _step++;
+      });
+    }
   }
 
   @override
@@ -36,23 +76,14 @@ class _MainMenuState extends State<MainMenu> {
     return Scaffold(
       appBar: AppBar(
         bottomOpacity: 1.0,
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color.fromARGB(255, 209, 209, 209),
+        foregroundColor: Colors.black,
         title: const Text(
           'y/n arround the world',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => GeografiApp()),
-              );
-            },
-            icon: Icon(Icons.public),
-            tooltip: 'Map',
-          ),
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -80,116 +111,150 @@ class _MainMenuState extends State<MainMenu> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: SizedBox(
-          height: 600,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Dialog(
-                  alignment: AlignmentGeometry.bottomCenter,
-
-                  child: Form(
-                    //The Form widget in Flutter is used to build a form, and it comes with built-in validation tools.
-                    key: _formkey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize
-                          .min, //so it ocupies as little space as posible
-                      children: [
-                        Text(
-                          initialText,
-                          style: TextStyle(
-                            fontSize: 50,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            height: 60,
-                            width: double.maxFinite,
-                            child: Text(
-                              'Im Hirata nice to meet you! let me show you around here. This is the main menu, here you can decide to customize your avatar, chat with your newly found friends by pressing on your global friend list... Or take a tour to the map window to make more friends!! good luck consider me as your first friend, you can find me in your friend list whenever you want to chat.',
-                            ),
-                          ),
-                        ),
-                        Divider(thickness: 0.8, color: Colors.black12),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            textDirection: TextDirection.ltr,
-
-                            children: [
-                              SizedBox(
-                                height: 50,
-                                width: 250,
-                                child: TextFormField(
-                                  controller:
-                                      _namefielcontroller, // this is to validate input
-                                  cursorHeight: 2.0,
-                                  cursorWidth: 2.0,
-
-                                  cursorColor: Colors.blue,
-
-                                  maxLength: 20,
-                                  decoration: InputDecoration(
-                                    focusedBorder: InputBorder.none,
-
-                                    labelText: 'Enter your name',
-                                    labelStyle: TextStyle(color: Colors.black),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: 0.5,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your name';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                              SizedBox(width: 600),
-                              TextButton(
-                                onPressed: () {
-                                  if (_formkey.currentState!.validate()) {
-                                    // if the userinput isnt null
-
-                                    setState(() {
-                                      String usersName =
-                                          _namefielcontroller.text;
-                                      initialText =
-                                          'Well $usersName i think you are ready to go';
-                                    });
-                                  }
-                                },
-                                child: Text('Next'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    //idk if (readerText == readerFirstexplanaiton){do nothing} else {readerText = readerFirstexplanaiton}
-                                  });
-                                },
-                                child: Text('Back'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/tours/bg0.jpg'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          Container(
+            alignment: Alignment(0, 0),
+            child: GestureDetector(
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/tours/globe.webp',
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
                 ),
               ),
-            ],
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GeografiApp()),
+                );
+              },
+            ),
           ),
-        ),
+          if (_showDialog) //so we only see the dialog in the tutorial
+            SafeArea(
+              child: SizedBox(
+                height: 650,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Dialog(
+                        alignment: AlignmentGeometry.bottomCenter,
+
+                        child: Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.topLeft,
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                '???',
+                                style: TextStyle(
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                height: 60,
+                                width: double.maxFinite,
+                                child: Text(_currentText),
+                              ),
+                            ),
+                            Divider(thickness: 0.8, color: Colors.black12),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                textDirection: TextDirection.ltr,
+                                children: [
+                                  if (_showNameInput)
+                                    //The Form widget in Flutter is used to build a form, and it comes with built-in validation tools.
+                                    Form(
+                                      key: _formkey,
+                                      child: Container(
+                                        alignment: Alignment.bottomLeft,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 9.0,
+                                        ),
+                                        child: SizedBox(
+                                          height: 50,
+                                          width: 250,
+                                          child: TextFormField(
+                                            controller:
+                                                _namefielcontroller, // this is to validate input
+                                            cursorHeight: 2.0,
+                                            cursorWidth: 2.0,
+
+                                            cursorColor: Colors.blue,
+
+                                            maxLength: 20,
+                                            decoration: InputDecoration(
+                                              focusedBorder: InputBorder.none,
+
+                                              labelText: 'Enter your name',
+                                              labelStyle: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  width: 0.5,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.trim().isEmpty) {
+                                                return 'Please enter your name';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  if (_showNameInput)
+                                    const SizedBox(width: 600),
+                                  if (_step > 0)
+                                    TextButton(
+                                      onPressed: () => setState(() => _step--),
+
+                                      child: Text('< Back'),
+                                    ),
+
+                                  TextButton(
+                                    onPressed: _nextDialog,
+                                    child: Text(
+                                      _step < _tutorialDialogs.length - 1
+                                          ? 'Next >'
+                                          : 'Got it!',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

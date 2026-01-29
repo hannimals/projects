@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:yn_arround_the_world/marker_blueprint.dart';
+import 'package:yn_arround_the_world/quizz.dart';
 import 'package:yn_arround_the_world/settings.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:yn_arround_the_world/tour_window.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GeografiApp extends StatefulWidget {
   const GeografiApp({super.key});
@@ -13,11 +15,71 @@ class GeografiApp extends StatefulWidget {
 }
 
 class _GeografiAppState extends State<GeografiApp> {
-  innitState() {
-    setState(() {
-      BuildContext;
-    });
+  int _step = 0;
+  late SharedPreferences _prefs;
+  final List<String> _tutorialDialogs = [
+    'Great job, you can now select the destination you want to travel to...',
+    'But first of all!',
+    'Good luck making friends out there. Just remember that i was your first.',
+    'OH! Wait...! Did i forget to tell you my name?',
+    'You can simply call me Ms Universe.',
+  ];
+
+  @override
+  void initState() {
     super.initState();
+    _loadTutorialState();
+  }
+
+  Future<void> _loadTutorialState() async {
+    _prefs = await SharedPreferences.getInstance();
+    bool tutorialCompleted = _prefs.getBool('mapTutorialCompleted') ?? false;
+    if (tutorialCompleted) {
+      setState(() {
+        _step = _tutorialDialogs.length;
+      });
+    }
+  }
+
+  Future<void> _saveTutorialCompleted() async {
+    await _prefs.setBool('mapTutorialCompleted', true);
+  }
+
+  String get _currentDialog {
+    if (_step >= _tutorialDialogs.length) {
+      return '';
+    }
+    String text = _tutorialDialogs[_step];
+    return text;
+  }
+
+  bool get _showDialog => _step < _tutorialDialogs.length;
+
+  // controller for imperative camera moves; use this to move/animate the
+  // camera to a constrained position before changing MapOptions.
+  final MapController _mapController = MapController();
+
+  // Ensure the current camera is valid for `newOptions` by constraining it
+  // with `newOptions.cameraConstraint` and moving the map if necessary.
+  // Call this before rebuilding `FlutterMap` with options that change
+  // bounds/zoom limits to avoid the "MapCamera is no longer within the
+  // cameraConstraint after an option change" exception.
+  void _ensureCameraMatchesConstraint(MapOptions newOptions) {
+    try {
+      final currentCamera = _mapController.camera;
+      final constrainedCamera = newOptions.cameraConstraint.constrain(
+        currentCamera,
+      );
+      if (constrainedCamera == null) return;
+
+      final center = constrainedCamera.center;
+      final zoom = constrainedCamera.zoom;
+      if (constrainedCamera != currentCamera) {
+        _mapController.move(center, zoom);
+      }
+    } catch (e) {
+      // If the controller isn't ready or API differs, ignore safely.
+    }
   }
 
   final List<TravelLocation> travelSpots = [
@@ -120,129 +182,193 @@ class _GeografiAppState extends State<GeografiApp> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            /*Text(
-              'Choose travel location',
-              style: TextStyle(fontSize: 35, fontWeight: FontWeight.w400),
-            ),*/
-            SizedBox(
-              height: 500,
-              width: double.maxFinite,
-              child: FlutterMap(
-                options: MapOptions(
-                  initialCenter: LatLng(0, 0),
-                  initialZoom: 2.0,
-                  minZoom: 1.0,
-                  maxZoom: 50.0,
-                  cameraConstraint: CameraConstraint.contain(
-                    bounds: LatLngBounds(LatLng(-90, -180), LatLng(90, 180)),
-                  ), //this is so the user cant go outside the map size
-                  initialCameraFit: CameraFit.insideBounds(
-                    bounds: LatLngBounds(LatLng(-90, -180), LatLng(90, 180)),
-                  ),
-                  keepAlive: true,
-                  interactionOptions: InteractionOptions(
-                    enableScrollWheel: true,
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 550,
+                  width: double.maxFinite,
+                  child: FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(
+                      initialCenter: LatLng(0, 0),
+                      initialZoom: 2.0,
+                      minZoom: 1.0,
+                      maxZoom: 50.0,
+                      cameraConstraint: CameraConstraint.contain(
+                        bounds: LatLngBounds(
+                          LatLng(-90, -180),
+                          LatLng(90, 180),
+                        ),
+                      ), //this is so the user cant go outside the map size
+                      initialCameraFit: CameraFit.insideBounds(
+                        bounds: LatLngBounds(
+                          LatLng(-90, -180),
+                          LatLng(90, 180),
+                        ),
+                      ),
+                      keepAlive: true,
+                      interactionOptions: InteractionOptions(
+                        enableScrollWheel: true,
+                      ),
+                    ),
+
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.hannimals.geografiapp',
+                      ),
+                      MarkerLayer(
+                        markers: travelSpots.map((spot) {
+                          return Marker(
+                            point: LatLng(
+                              spot.latitude,
+                              spot.longitude,
+                            ), //this is where the marker is placed
+                            width: 60,
+                            height: 60,
+                            child: GestureDetector(
+                              //this makes it possible to click on the marker
+                              onDoubleTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (dialogcontext) => AlertDialog(
+                                    //this is the popup that appears when clicking the marker
+                                    title: Text(spot.city),
+                                    content: Text(
+                                      'Welcome to ${spot.city}, ${spot.country}!\n\n'
+                                      'Main landmark: ${spot.landmark}\n\n'
+                                      'Ready for a virtual tour?',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text('close'),
+                                        onPressed: () =>
+                                            Navigator.pop(dialogcontext),
+                                      ),
+                                      TextButton(
+                                        child: const Text('Tour'),
+                                        onPressed: () {
+                                          // if city is in city_list: load image asset folder of city
+
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => TourWindow(
+                                                country: spot.country,
+                                                city: spot.city,
+                                                landmark: spot.landmark,
+                                              ),
+                                            ),
+                                          );
+                                          ScaffoldMessenger.of(
+                                            context, //shows a little message at the bottom of the screen
+                                          ).showSnackBar(
+                                            // this is the message that appears when pressing tour
+                                            const SnackBar(
+                                              content: Text(
+                                                'Starting Virtual tour...',
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              child: const Icon(
+                                //this is what the marker looks like
+                                Icons.location_pin,
+                                color: Colors.red,
+                                size: 50,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
                   ),
                 ),
+              ],
+            ),
+          ),
+          if (_showDialog)
+            Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
 
                 children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.hannimals.geografiapp',
-                  ),
-                  MarkerLayer(
-                    markers: travelSpots.map((spot) {
-                      return Marker(
-                        point: LatLng(
-                          spot.latitude,
-                          spot.longitude,
-                        ), //this is where the marker is placed
-                        width: 60,
-                        height: 60,
-                        child: GestureDetector(
-                          //this makes it possible to click on the marker
-                          onDoubleTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (dialogcontext) => AlertDialog(
-                                //this is the popup that appears when clicking the marker
-                                title: Text(spot.city),
-                                content: Text(
-                                  'Welcome to ${spot.city}, ${spot.country}!\n\n'
-                                  'Main landmark: ${spot.landmark}\n\n'
-                                  'Ready for a virtual tour?',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(dialogcontext),
-                                    child: const Text('close'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      final BuildContext currentcontext =
-                                          context;
-
-                                      Navigator.pop(dialogcontext);
-                                      ScaffoldMessenger.of(
-                                        currentcontext, //shows a little message at the bottom of the screen
-                                      ).showSnackBar(
-                                        // this is the message that appears when pressing tour
-                                        const SnackBar(
-                                          content: Text(
-                                            'Starting Virtual tour...',
-                                          ),
-                                        ),
-                                      );
-                                      final Uri url = Uri.parse(
-                                        'https://hannimals777.itch.io/yn-arrownd-the-world-egypt',
-                                      );
-                                      if (await canLaunchUrl(url)) {
-                                        if (!mounted) return;
-
-                                        await launchUrl(
-                                          url,
-                                          mode: LaunchMode.externalApplication,
-                                        );
-                                      } else {
-                                        if (!mounted) return;
-                                        ScaffoldMessenger.of(
-                                          currentcontext,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                              'Could not launch tour',
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-
-                                    child: const Text('Tour'),
-                                  ),
-                                ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Dialog(
+                      alignment: AlignmentGeometry.bottomCenter,
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.topLeft,
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              '???',
+                              style: TextStyle(
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
                               ),
-                            );
-                          },
-                          child: const Icon(
-                            //this is what the marker looks like
-                            Icons.location_pin,
-                            color: Colors.red,
-                            size: 50,
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              height: 60,
+                              child: Text(
+                                _currentDialog,
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ),
+                          Divider(thickness: 0.8, color: Colors.black12),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              textDirection: TextDirection.ltr,
+                              children: [
+                                if (_step > 0)
+                                  TextButton(
+                                    onPressed: () => setState(() => _step--),
+                                    child: const Text('Back'),
+                                  ),
+                                TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _step++;
+                                    });
+                                    if (_step >= _tutorialDialogs.length) {
+                                      _saveTutorialCompleted();
+                                    }
+                                  },
+
+                                  child: Text(
+                                    _step < _tutorialDialogs.length - 1
+                                        ? 'Next'
+                                        : 'End Tutorial',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
