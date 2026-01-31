@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yn_arround_the_world/settings.dart';
+import 'settings.dart';
 import 'quiz_question.dart';
 
 // screen for the quiz (stateful because question and score change)
@@ -23,7 +23,7 @@ class _QuizzState extends State<Quizz> {
 
   /// all questions in the quiz
   // CHANGE INDEXES !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  final List<QuizQuestion> questions_egypt = [
+  final List<QuizQuestion> questionsEgypt = [
     // EGYPT
     QuizQuestion(
       question: 'What is the countrys world wonder?',
@@ -52,7 +52,7 @@ class _QuizzState extends State<Quizz> {
       correctIndex: 0,
     ),
   ];
-  final List<QuizQuestion> questions_mexico = [
+  final List<QuizQuestion> questionsMexico = [
     // MEXICO
     QuizQuestion(
       question: 'What is the countrys world wonder?',
@@ -80,7 +80,7 @@ class _QuizzState extends State<Quizz> {
       correctIndex: 0,
     ),
   ];
-  final List<QuizQuestion> questions_china = [
+  final List<QuizQuestion> questionsChina = [
     // CHINA
     QuizQuestion(
       question: 'What is the countrys world wonder?',
@@ -115,13 +115,13 @@ class _QuizzState extends State<Quizz> {
 
   List<QuizQuestion> get questions {
     if (widget.country == 'Egypt') {
-      List<QuizQuestion> listofquestions = questions_egypt;
+      List<QuizQuestion> listofquestions = questionsEgypt;
       return listofquestions;
     } else if (widget.country == 'China') {
-      List<QuizQuestion> listofquestions = questions_china;
+      List<QuizQuestion> listofquestions = questionsChina;
       return listofquestions;
     } else {
-      List<QuizQuestion> listofquestions = questions_mexico;
+      List<QuizQuestion> listofquestions = questionsMexico;
       return listofquestions;
     }
   }
@@ -179,22 +179,50 @@ class _QuizzState extends State<Quizz> {
     // builds the quiz screen (how it looks)
     return Scaffold(
       appBar: AppBar(
+        bottomOpacity: 1.0,
         title: const Text(
-          'y/n around the world',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
+          'y/n arround the world',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
         ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => SettingsPage()),
+                MaterialPageRoute(builder: (context) => SettingsPage()),
               );
             },
+            icon: Icon(Icons.settings),
+            tooltip: 'Settings',
           ),
-          IconButton(icon: const Icon(Icons.emoji_people), onPressed: () {}),
+          IconButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('not available yet')),
+              );
+            },
+            icon: Icon(Icons.emoji_people),
+            tooltip: 'Friend list',
+          ),
+          IconButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('not available yet')),
+              );
+            },
+            icon: Icon(Icons.shopping_bag),
+            tooltip: 'Shop',
+          ),
+          IconButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('not available yet')),
+              );
+            },
+            icon: Icon(Icons.person),
+            tooltip: 'My account',
+          ),
         ],
       ),
       body: SafeArea(
@@ -229,20 +257,18 @@ class _QuizzState extends State<Quizz> {
                         ),
                         const SizedBox(height: 24),
 
-                        Column(
-                          children: List.generate(
-                            question.answers.length,
-                            (index) => ListTile(
-                              title: Text(question.answers[index]),
-
-                              leading: RadioGroup<int>(
-                                groupValue: selectedAnswer,
-                                onChanged: (int? value) {
-                                  if (showResult) return;
-
-                                  selectAnswer(value!);
-                                },
-                                child: Radio(value: index),
+                        RadioGroup<int?>(
+                          groupValue: selectedAnswer,
+                          onChanged: (int? newValue) {
+                            if (showResult) return;
+                            selectAnswer(newValue!);
+                          },
+                          child: Column(
+                            children: List.generate(
+                              question.answers.length,
+                              (index) => ListTile(
+                                title: Text(question.answers[index]),
+                                leading: Radio<int?>(value: index),
                               ),
                             ),
                           ),
@@ -279,6 +305,16 @@ class _QuizzState extends State<Quizz> {
                               ),
                             ),
                           ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(
+                            'End Quiz',
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

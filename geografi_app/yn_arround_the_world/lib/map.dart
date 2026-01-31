@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:yn_arround_the_world/marker_blueprint.dart';
-import 'package:yn_arround_the_world/quizz.dart';
-import 'package:yn_arround_the_world/settings.dart';
-import 'package:yn_arround_the_world/tour_window.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'tour_window.dart'; // Import other views as needed
+import 'settings.dart';
+import 'marker_blueprint.dart'; // For TravelLocation
 
 class GeografiApp extends StatefulWidget {
   const GeografiApp({super.key});
@@ -27,6 +26,7 @@ class _GeografiAppState extends State<GeografiApp> {
 
   @override
   void initState() {
+    _step = 0;
     super.initState();
     _loadTutorialState();
   }
@@ -176,7 +176,11 @@ class _GeografiAppState extends State<GeografiApp> {
             tooltip: 'Settings',
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('not available yet')),
+              );
+            },
             icon: Icon(Icons.emoji_people),
             tooltip: 'Friend list',
           ),
@@ -196,19 +200,14 @@ class _GeografiAppState extends State<GeografiApp> {
                       initialCenter: LatLng(0, 0),
                       initialZoom: 2.0,
                       minZoom: 1.0,
-                      maxZoom: 50.0,
+                      maxZoom: 11.0,
                       cameraConstraint: CameraConstraint.contain(
                         bounds: LatLngBounds(
                           LatLng(-90, -180),
                           LatLng(90, 180),
                         ),
                       ), //this is so the user cant go outside the map size
-                      initialCameraFit: CameraFit.insideBounds(
-                        bounds: LatLngBounds(
-                          LatLng(-90, -180),
-                          LatLng(90, 180),
-                        ),
-                      ),
+
                       keepAlive: true,
                       interactionOptions: InteractionOptions(
                         enableScrollWheel: true,

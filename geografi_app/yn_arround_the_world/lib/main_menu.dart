@@ -1,7 +1,8 @@
 //settings, view map, view my character, friend list
+
 import 'package:flutter/material.dart';
-import 'package:yn_arround_the_world/map.dart';
-import 'package:yn_arround_the_world/settings.dart';
+import 'map.dart';
+import 'settings.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -21,7 +22,7 @@ class _MainMenuState extends State<MainMenu> {
     super.initState();
     _tutorialDialogs = [
       'Welcome! whats your name?',
-      'Nice to meet you \$usersName, welcome to planet earth',
+      'Nice to meet you \$user, welcome to planet earth',
       'let me show you around here.',
       'This is the main menu, here you can decide to customize your avatar by pressing the account button', //if readerText == TutorialDilogs[2] disable all icons ecxept for account
       'You can also acsses your newly found friends by pressing on your global friend list',
@@ -40,7 +41,7 @@ class _MainMenuState extends State<MainMenu> {
     if (_step >= _tutorialDialogs.length) return '';
     String text = _tutorialDialogs[_step];
     if (_step >= 1) {
-      text = text.replaceAll('\$usersName', usersName);
+      text = text.replaceAll('\$user', usersName);
     }
     return text;
   }
@@ -52,10 +53,12 @@ class _MainMenuState extends State<MainMenu> {
   bool get _showDialog => _step < _tutorialDialogs.length;
 
   void _nextDialog() {
+    //this runs on onPressed: 'Next >'
     if (_step == 0) {
       if (_formkey.currentState!.validate()) {
         setState(() {
-          usersName = _namefielcontroller.text
+          usersName = _namefielcontroller
+              .text // if the form isnt valid yet deete the spacing in the user name and allow the dialog change
               .trim(); //the trim removes space from the input
           _step++;
         });
@@ -76,8 +79,6 @@ class _MainMenuState extends State<MainMenu> {
     return Scaffold(
       appBar: AppBar(
         bottomOpacity: 1.0,
-        backgroundColor: const Color.fromARGB(255, 209, 209, 209),
-        foregroundColor: Colors.black,
         title: const Text(
           'y/n arround the world',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
@@ -95,19 +96,31 @@ class _MainMenuState extends State<MainMenu> {
             tooltip: 'Settings',
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('not available yet')),
+              );
+            },
             icon: Icon(Icons.emoji_people),
             tooltip: 'Friend list',
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('not available yet')),
+              );
+            },
             icon: Icon(Icons.shopping_bag),
             tooltip: 'Shop',
           ),
           IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.chat),
-            tooltip: 'Chat with friends',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('not available yet')),
+              );
+            },
+            icon: Icon(Icons.person),
+            tooltip: 'My account',
           ),
         ],
       ),
@@ -127,8 +140,8 @@ class _MainMenuState extends State<MainMenu> {
               child: ClipOval(
                 child: Image.asset(
                   'assets/tours/globe.webp',
-                  width: 200,
-                  height: 200,
+                  width: 400,
+                  height: 400,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -173,7 +186,10 @@ class _MainMenuState extends State<MainMenu> {
                                 child: Text(_currentText),
                               ),
                             ),
-                            Divider(thickness: 0.8, color: Colors.black12),
+                            Divider(
+                              thickness: 0.8,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Row(
@@ -198,7 +214,9 @@ class _MainMenuState extends State<MainMenu> {
                                             cursorHeight: 2.0,
                                             cursorWidth: 2.0,
 
-                                            cursorColor: Colors.blue,
+                                            cursorColor: Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
 
                                             maxLength: 20,
                                             decoration: InputDecoration(
@@ -206,16 +224,21 @@ class _MainMenuState extends State<MainMenu> {
 
                                               labelText: 'Enter your name',
                                               labelStyle: TextStyle(
-                                                color: Colors.black,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.primary,
                                               ),
                                               enabledBorder: OutlineInputBorder(
                                                 borderSide: BorderSide(
                                                   width: 0.5,
-                                                  color: Colors.black,
+                                                  color: Theme.of(
+                                                    context,
+                                                  ).colorScheme.primary,
                                                 ),
                                               ),
                                             ),
                                             validator: (value) {
+                                              //we validate input here
                                               if (value == null ||
                                                   value.trim().isEmpty) {
                                                 return 'Please enter your name';
