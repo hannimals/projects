@@ -64,6 +64,7 @@ class _GeografiAppState extends State<GeografiApp> {
   // Call this before rebuilding `FlutterMap` with options that change
   // bounds/zoom limits to avoid the "MapCamera is no longer within the
   // cameraConstraint after an option change" exception.
+  //this isnt used rn
   void _ensureCameraMatchesConstraint(MapOptions newOptions) {
     try {
       final currentCamera = _mapController.camera;
@@ -305,6 +306,9 @@ class _GeografiAppState extends State<GeografiApp> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Dialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
                       alignment: AlignmentGeometry.bottomCenter,
                       child: Column(
                         children: [

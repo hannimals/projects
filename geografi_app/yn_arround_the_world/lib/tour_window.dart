@@ -3,6 +3,7 @@
 // take city/country parameter and load assets from there + make custom dialog from there.
 
 import 'package:flutter/material.dart';
+import 'package:yn_arround_the_world/map.dart';
 import 'quizz.dart';
 
 class TourWindow extends StatefulWidget {
@@ -140,7 +141,7 @@ class _TourWindowState extends State<TourWindow> {
         _backgroundPaths[38] = 'bg22.png';
         _backgroundPaths[39] = 'bg22.png';
         _backgroundPaths[40] = 'bg23.png';
-        _backgroundPaths[41] = 'bg24.png';
+        _backgroundPaths[41] = 'bg21.png';
         _backgroundPaths[42] = 'bg25.png';
         _showCharacter = List.generate(_dialogs.length, (_) => true);
         _showCharacter[0] = false;
@@ -152,7 +153,6 @@ class _TourWindowState extends State<TourWindow> {
         _showCharacter[15] = false;
         _showCharacter[20] = false;
         _showCharacter[33] = false;
-        _showCharacter[41] = false;
         _showCharacter[42] = false;
         break;
 
@@ -207,7 +207,7 @@ class _TourWindowState extends State<TourWindow> {
   }
 
   String get _currentDialogText {
-    if (_step <= _dialogs.length) return '';
+    if (_step >= _dialogs.length) return '';
     return _dialogs[_step];
   }
 
@@ -241,6 +241,42 @@ class _TourWindowState extends State<TourWindow> {
                 fit: BoxFit.cover,
                 alignment: Alignment.center,
               ),
+            ),
+          ),
+          Positioned(
+            height: 20,
+            top: 10,
+            left: 15,
+            child: ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (dialogcontext) => AlertDialog(
+                    title: Text(
+                      'If you exit the experience you will lose your progress',
+                    ),
+                    content: Text('press back to continew the tour'),
+                    actions: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(dialogcontext);
+                        },
+                        child: Text('Back'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.popUntil(
+                            context,
+                            ModalRoute.withName('/map'),
+                          );
+                        },
+                        child: Text('Exit Tour'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              child: Text('Exit'),
             ),
           ),
           //tourguide
@@ -343,15 +379,6 @@ class _TourWindowState extends State<TourWindow> {
                   ],
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            bottom: 100,
-            left: 150,
-            right: 100,
-            child: Text(
-              'The Great Pyramids of Giza!!!',
-              style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
         ],

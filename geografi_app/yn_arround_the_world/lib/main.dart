@@ -25,11 +25,11 @@ class MyApp extends StatelessWidget {
           darkTheme: ThemeData(
             primaryColor: Color.fromRGBO(117, 187, 244, 100),
             brightness: Brightness.dark,
-            scaffoldBackgroundColor: Color.fromRGBO(26, 22, 23, 100),
+            colorScheme: darkDynamic,
             useMaterial3: false,
           ),
 
-          themeMode: ThemeMode.light,
+          themeMode: ThemeMode.dark,
 
           home: MainMenu(),
         );

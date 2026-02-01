@@ -51,6 +51,15 @@ class _QuizzState extends State<Quizz> {
       answers: ['Cat', 'Pigeon', 'Nile Crocodile'],
       correctIndex: 0,
     ),
+    QuizQuestion(
+      question: 'Which one of theese is an egyptian ancient world wonder?',
+      answers: [
+        'The light house of Alexandria',
+        'The pyramids of Xochicalco',
+        'The great Colosseum',
+      ],
+      correctIndex: 0,
+    ),
   ];
   final List<QuizQuestion> questionsMexico = [
     // MEXICO
@@ -163,7 +172,6 @@ class _QuizzState extends State<Quizz> {
   void resetQuiz() {
     setState(() {
       currentQuestionIndex = 0;
-      score = 0;
       selectedAnswer = null;
       showResult = false;
       friendUnlocked = false;
@@ -290,8 +298,9 @@ class _QuizzState extends State<Quizz> {
 
                         // shows correct or wrong
                         if (showResult)
-                          Align(
-                            alignment: Alignment.bottomRight,
+                          Container(
+                            height: 150,
+                            alignment: Alignment.topLeft,
                             child: ElevatedButton(
                               // if there are more questions the next button is there otherwise repeat quiz
                               onPressed:
@@ -305,16 +314,24 @@ class _QuizzState extends State<Quizz> {
                               ),
                             ),
                           ),
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text(
-                            'End Quiz',
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
+
+                        //shows end button to escape the quiz
+                        if (currentQuestionIndex >= questions.length - 1 &&
+                            showResult == true)
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            alignment: Alignment.bottomRight,
+                            child: ElevatedButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(
+                                'End Quiz',
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
