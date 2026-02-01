@@ -2,8 +2,6 @@
 //baggrund billede + karakter (2d billede, renpy sprite + dialog)
 // take city/country parameter and load assets from there + make custom dialog from there.
 
-//todo: commit changes and ask: i dont know if creating a class to store the scenes is the best idea as i have 43 scenes in egypt. moreover my app is freezing (not responding) during the virtual tour. ive commited the changes so you can see them in my github.
-
 import 'package:flutter/material.dart';
 import 'quizz.dart';
 
@@ -185,9 +183,30 @@ class _TourWindowState extends State<TourWindow> {
         _showCharacter = [false];
         _characterName = 'Ms. Universe';
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _precacheCurrentandNext();
+    });
   }
 
-  String get _currenDialogText {
+  void _precacheCurrentandNext() async {
+    // we create a function to load the next images beforehand to improve fluidity
+    if (!mounted) return;
+    precacheImage(_currentBackground, context);
+    if (_isCharacterBeingShowed) {
+      precacheImage(
+        AssetImage('assets/tours/${widget.country.toLowerCase()}/Guide.png'),
+        context,
+      );
+    }
+    if (_step + 1 < _backgroundPaths.length) {
+      final nextPath =
+          'assets/tours/${widget.country.toLowerCase()}/${_backgroundPaths[_step + 1]}';
+      precacheImage(AssetImage(nextPath), context);
+    }
+  }
+
+  String get _currentDialogText {
     if (_step <= _dialogs.length) return '';
     return _dialogs[_step];
   }
@@ -197,7 +216,7 @@ class _TourWindowState extends State<TourWindow> {
       return AssetImage('assets/tours/bg0.jpg');
     }
     final imagepath =
-        'assets/Tours/${widget.country.toLowerCase()}/${_backgroundPaths[_step]}';
+        'assets/tours/${widget.country.toLowerCase()}/${_backgroundPaths[_step]}';
     return AssetImage(imagepath);
   }
 
@@ -273,7 +292,7 @@ class _TourWindowState extends State<TourWindow> {
                       height: 60,
 
                       child: Text(
-                        _currenDialogText,
+                        _currentDialogText,
                         style: const TextStyle(
                           fontSize: 20,
                           color: Colors.white,
@@ -300,6 +319,7 @@ class _TourWindowState extends State<TourWindow> {
                           onPressed: () {
                             if (!_isLastStep) {
                               setState(() => _step++);
+                              _precacheCurrentandNext();
                             } else {
                               Navigator.pushReplacement(
                                 context,
