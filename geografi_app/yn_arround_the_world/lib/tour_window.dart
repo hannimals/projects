@@ -3,7 +3,7 @@
 // take city/country parameter and load assets from there + make custom dialog from there.
 
 import 'package:flutter/material.dart';
-import 'package:yn_arround_the_world/map.dart';
+import 'map.dart';
 import 'quizz.dart';
 
 class TourWindow extends StatefulWidget {
@@ -27,6 +27,7 @@ class _TourWindowState extends State<TourWindow> {
   late List<String> _dialogs;
   late List<bool> _showCharacter;
   late String _characterName;
+  late String _fontFamily;
   final List<String> _dialogsEgypt = [
     "You just landed in the bustling streets of Cairo.",
     'A faint silhouette of a woman walks towards you.',
@@ -116,6 +117,7 @@ class _TourWindowState extends State<TourWindow> {
       case 'egypt':
         _dialogs = _dialogsEgypt;
         _characterName = 'Sharifa';
+        _fontFamily = 'Mynerve';
         _backgroundPaths = List.generate(_dialogs.length, (i) => 'bg1.png');
         _backgroundPaths[12] = 'bg13.png';
         _backgroundPaths[14] = 'bg15.png';
@@ -159,10 +161,23 @@ class _TourWindowState extends State<TourWindow> {
       case 'mexico':
         _dialogs = _dialogsMexico;
         _characterName = 'Alejo';
-        _backgroundPaths = List.filled(
-          _dialogs.length,
-          'bg_mexico_default.jpg',
-        );
+        _fontFamily = 'Quintessential';
+        _backgroundPaths = List.filled(_dialogs.length, 'bg0.png');
+        _backgroundPaths[7] = 'bg1.png';
+        _backgroundPaths[8] = 'bg1.png';
+        _backgroundPaths[9] = 'bg1.png';
+        _backgroundPaths[10] = 'bg1.png';
+        _backgroundPaths[11] = 'bg1.png';
+        _backgroundPaths[12] = 'bg1.png';
+        _backgroundPaths[13] = 'bg2.png';
+        _backgroundPaths[14] = 'bg2.png';
+        _backgroundPaths[15] = 'bg2.png';
+        _backgroundPaths[16] = 'bg2.png';
+        _backgroundPaths[17] = 'bg2.png';
+        _backgroundPaths[18] = 'bg3.png';
+        _backgroundPaths[19] = 'bg3.png';
+        _backgroundPaths[20] = 'bg3.png';
+
         // Customize per step when you have more assets
         _showCharacter = List.generate(_dialogs.length, (_) => true);
         _showCharacter[0] = false; // Intro crowd scene
@@ -171,9 +186,22 @@ class _TourWindowState extends State<TourWindow> {
       case 'china':
         _dialogs = _dialogsChina;
         _characterName = ' Luo Yan (洛妍)';
+        _fontFamily = 'Special Elite';
         _backgroundPaths = List.filled(_dialogs.length, 'bg1.jpg');
+        _backgroundPaths[11] = 'bg2.png';
+        _backgroundPaths[12] = 'bg2.png';
+        _backgroundPaths[13] = 'bg2.png';
+        _backgroundPaths[14] = 'bg2.png';
+        _backgroundPaths[15] = 'bg2.png';
+        _backgroundPaths[16] = 'bg2.png';
+        _backgroundPaths[17] = 'bg2.png';
+        _backgroundPaths[18] = 'bg2.png';
+        _backgroundPaths[19] = 'bg2.png';
+        _backgroundPaths[20] = 'bg2.png';
+        _backgroundPaths[21] = 'bg2.png';
         _showCharacter = List.generate(_dialogs.length, (_) => true);
         _showCharacter[0] = false; // Confusion on wall
+        _showCharacter[1] = false;
         break;
 
       default:
@@ -204,6 +232,11 @@ class _TourWindowState extends State<TourWindow> {
           'assets/tours/${widget.country.toLowerCase()}/${_backgroundPaths[_step + 1]}';
       precacheImage(AssetImage(nextPath), context);
     }
+  }
+
+  String get currentFontFamily {
+    if (_step >= _dialogs.length) return '';
+    return _fontFamily.toString();
   }
 
   String get _currentDialogText {
@@ -248,6 +281,17 @@ class _TourWindowState extends State<TourWindow> {
             top: 10,
             left: 15,
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent.withValues(
+                  alpha: 0.5,
+                ), // ← your custom color
+                foregroundColor: Colors.white,
+                elevation: 4,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+              ),
               onPressed: () {
                 showDialog(
                   context: context,
@@ -261,22 +305,20 @@ class _TourWindowState extends State<TourWindow> {
                         onPressed: () {
                           Navigator.pop(dialogcontext);
                         },
-                        child: Text('Back'),
+                        child: Text('Cancel'),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.popUntil(
-                            context,
-                            ModalRoute.withName('/map'),
-                          );
+                          Navigator.pop(dialogcontext);
+                          Navigator.pop(context);
                         },
-                        child: Text('Exit Tour'),
+                        child: Text('Exit'),
                       ),
                     ],
                   ),
                 );
               },
-              child: Text('Exit'),
+              child: Text('Exit Tour'),
             ),
           ),
           //tourguide
@@ -330,6 +372,7 @@ class _TourWindowState extends State<TourWindow> {
                       child: Text(
                         _currentDialogText,
                         style: const TextStyle(
+                          fontFamily: '$currentFontFamily',
                           fontSize: 20,
                           color: Colors.white,
                         ),

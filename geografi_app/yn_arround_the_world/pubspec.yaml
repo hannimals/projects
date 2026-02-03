@@ -83,9 +83,17 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
+  fonts:
+      - family: Mynerve
+        fonts:
+          - asset: assets\fonts\Mynerve,Quintessential,Special_Elite\Mynerve\Mynerve-Regular.ttf
+      - family: Quintessential
+        fonts:
+          - asset: assets\fonts\Mynerve,Quintessential,Special_Elite\Quintessential\Quintessential-Regular.ttf
+      - family: Special_Elite
+        fonts:
+          - asset: assets\fonts\Mynerve,Quintessential,Special_Elite\Special_Elite\SpecialElite-Regular.ttf
+          
   #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
