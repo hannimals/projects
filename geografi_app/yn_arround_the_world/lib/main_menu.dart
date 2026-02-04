@@ -163,6 +163,7 @@ class _MainMenuState extends State<MainMenu> {
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Dialog(
+                        backgroundColor: Theme.of(context).primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18),
                         ),

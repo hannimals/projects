@@ -80,10 +80,21 @@ class _TourWindowState extends State<TourWindow> {
     'Welcome to Mexico City. The capital of Mexico ',
     'Im from Sinaloa, one of the northeren states of Mexico. You can see it on my clothing, like my belt. ',
     'This belt is called a charro belt. Charro means a Mexican horseman or cowboy',
-    'Which leads us to my favorite part os this trip... lets go follow me!.',
+    'Which leads us to my favorite part of this trip... lets go follow me!.',
     'This is called Charrería. It is Mexicos national sport',
     'This is so exciting ¡Ajúa!',
     'This is also my favorite sport since i loooove horses',
+    'I see the game is coming to an end now. Oh wait what is that sound...',
+    'Its a marichi! Mariachis are traditional mexican bands. Their music is played during celebratins of special occassions ',
+    'That was so fun. However were just getting started. Lets go to our next location ',
+    'this is Chichen Itza. One of the 7 world wonders.',
+    'Chichen Itza was build between the 7th and 13th centuries by the maya civilazations',
+    'Fun fact about the maya people. They were the first to use cacao. They used it for sacred and medicinal purposes.',
+    'I hold a lot of pride in that. Because i also loooove chocolate!',
+    'Anyways. Lets to to our next location. ',
+    'Tadaaaaa. This is Pico de Orizaba, an active volcano and the tallest mountain in Mexico',
+    'It is located right on the boarder of the states Veracruz and Puebla. It raises 5.6 km above sea level.',
+    'And this beings our travels to an end.',
   ];
   final List<String> _dialogsChina = [
     'Somehow you made it on top of... The Great Wall of China?',
@@ -117,7 +128,7 @@ class _TourWindowState extends State<TourWindow> {
       case 'egypt':
         _dialogs = _dialogsEgypt;
         _characterName = 'Sharifa';
-        _fontFamily = 'Mynerve';
+        _fontFamily = 'Quintessential';
         _backgroundPaths = List.generate(_dialogs.length, (i) => 'bg1.png');
         _backgroundPaths[12] = 'bg13.png';
         _backgroundPaths[14] = 'bg15.png';
@@ -161,9 +172,9 @@ class _TourWindowState extends State<TourWindow> {
       case 'mexico':
         _dialogs = _dialogsMexico;
         _characterName = 'Alejo';
-        _fontFamily = 'Quintessential';
+        _fontFamily = 'Mynerve';
         _backgroundPaths = List.filled(_dialogs.length, 'bg0.png');
-        _backgroundPaths[7] = 'bg1.png';
+        _backgroundPaths[6] = 'bg1.png';
         _backgroundPaths[8] = 'bg1.png';
         _backgroundPaths[9] = 'bg1.png';
         _backgroundPaths[10] = 'bg1.png';
@@ -176,7 +187,7 @@ class _TourWindowState extends State<TourWindow> {
         _backgroundPaths[17] = 'bg2.png';
         _backgroundPaths[18] = 'bg3.png';
         _backgroundPaths[19] = 'bg3.png';
-        _backgroundPaths[20] = 'bg3.png';
+        //_backgroundPaths[20] = 'bg3.png';
 
         // Customize per step when you have more assets
         _showCharacter = List.generate(_dialogs.length, (_) => true);
@@ -234,10 +245,7 @@ class _TourWindowState extends State<TourWindow> {
     }
   }
 
-  String get currentFontFamily {
-    if (_step >= _dialogs.length) return '';
-    return _fontFamily.toString();
-  }
+  String get _currentFontFamily => _fontFamily;
 
   String get _currentDialogText {
     if (_step >= _dialogs.length) return '';
@@ -371,8 +379,8 @@ class _TourWindowState extends State<TourWindow> {
 
                       child: Text(
                         _currentDialogText,
-                        style: const TextStyle(
-                          fontFamily: '$currentFontFamily',
+                        style: TextStyle(
+                          fontFamily: _currentFontFamily,
                           fontSize: 20,
                           color: Colors.white,
                         ),

@@ -23,9 +23,10 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           darkTheme: ThemeData(
-            primaryColor: Color.fromRGBO(117, 187, 244, 100),
+            primaryColor: Color.fromRGBO(33, 75, 110, 1),
             brightness: Brightness.dark,
             colorScheme: darkDynamic,
+
             useMaterial3: false,
           ),
 
