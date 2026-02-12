@@ -20,6 +20,8 @@ class _QuizzState extends State<Quizz> {
   // track achivements
   bool friendUnlocked = false;
   bool souvenirUnlocked = false;
+  late String _souvenirPath;
+  late String _friend;
 
   /// all questions in the quiz
   // CHANGE INDEXES !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -61,6 +63,7 @@ class _QuizzState extends State<Quizz> {
       correctIndex: 0,
     ),
   ];
+
   final List<QuizQuestion> questionsMexico = [
     // MEXICO
     QuizQuestion(
@@ -81,7 +84,7 @@ class _QuizzState extends State<Quizz> {
     QuizQuestion(
       question: 'What is a native way of celebrating special occasions?',
       answers: ['Mariachi', 'Piñata', 'Eat leche flan'],
-      correctIndex: 1,
+      correctIndex: 0,
     ),
     QuizQuestion(
       question: 'What food originated in Mexico?',
@@ -101,7 +104,7 @@ class _QuizzState extends State<Quizz> {
       correctIndex: 0,
     ),
     QuizQuestion(
-      question: 'What is the country’s capital city?',
+      question: 'What is the countrys capital city?',
       answers: ['Beijing', 'Shanghai', 'Guangzhou'],
       correctIndex: 0,
     ),
@@ -111,7 +114,7 @@ class _QuizzState extends State<Quizz> {
       correctIndex: 0,
     ),
     QuizQuestion(
-      question: 'What is the name of Luo Yan’s cultural clothing?',
+      question: 'What is the name of Luo Yans cultural clothing?',
       answers: ['Qipao', 'Kimono', 'Hanbok'],
       correctIndex: 0,
     ),
@@ -121,6 +124,27 @@ class _QuizzState extends State<Quizz> {
       correctIndex: 0,
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    switch (widget.country.toLowerCase()) {
+      case 'egypt':
+        _souvenirPath = 'assets/tours/egypt/souvenir.png';
+        _friend = 'Sharifa';
+        break;
+
+      case 'mexico':
+        _souvenirPath = 'assets/tours/mexico/souvenir.png';
+        _friend = 'Alejo';
+        break;
+
+      case 'china':
+        _souvenirPath = 'assets/tours/china/souvenir.webp';
+        _friend = 'Luo Yan';
+        break;
+    }
+  }
 
   List<QuizQuestion> get questions {
     if (widget.country == 'Egypt') {
@@ -346,14 +370,17 @@ class _QuizzState extends State<Quizz> {
                 child: Column(
                   children: [
                     if (friendUnlocked)
-                      const RewardTile(
+                      RewardTile(
                         icon: Icons.person_add,
-                        text: 'New friend unlocked!',
+                        text: 'New friend unlocked! ($_friend)',
                       ),
                     if (souvenirUnlocked)
-                      const RewardTile(
-                        icon: Icons.card_giftcard,
-                        text: 'Souvenir earned!',
+                      Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: ListTile(
+                          leading: Image.asset(_souvenirPath),
+                          title: Text('You won a souvenir!'),
+                        ),
                       ),
                     RewardTile(icon: Icons.star, text: 'Score: $score'),
                   ],

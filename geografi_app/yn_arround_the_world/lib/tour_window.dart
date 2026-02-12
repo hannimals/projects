@@ -1,10 +1,7 @@
-// when press tour navigate to tour window
-//baggrund billede + karakter (2d billede, renpy sprite + dialog)
-// take city/country parameter and load assets from there + make custom dialog from there.
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'map.dart';
 import 'quizz.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class TourWindow extends StatefulWidget {
   final String country;
@@ -23,11 +20,16 @@ class TourWindow extends StatefulWidget {
 
 class _TourWindowState extends State<TourWindow> {
   int _step = 0;
-  late List<String> _backgroundPaths;
-  late List<String> _dialogs;
-  late List<bool> _showCharacter;
+  late List<String> _backgroundPaths; //image paths for the bacgrounds
+  late List<String?>
+  _backgroundmusicPaths; //sound paths for the background sounds
+  late List<String?>
+  _soundeffectsPaths; //list to store the one time sound effects
+  late List<String> _dialogs; // string list for the dialogs
+  late List<bool> _showCharacter; // bool to determine when the character apears
   late String _characterName;
   late String _fontFamily;
+  late AudioPlayer _audioPlayer;
   final List<String> _dialogsEgypt = [
     "You just landed in the bustling streets of Cairo.",
     'A faint silhouette of a woman walks towards you.',
@@ -105,8 +107,8 @@ class _TourWindowState extends State<TourWindow> {
     'My name is Lou Yan. Im very pleased to finally meet you Y/N.',
     'We are currently standing on The Great Wall of China. This is one of the 7 world wonders of the world',
     'The Wall strikes over 20.000 km! and took over 2000 years to build',
-    'But right now we are standing on the part og the wall, that is located in Beijing which also happens to be the capital city of China ',
-    'oh yeah I almost forgot. Ms Univers bought us traintickts to expeinces shanghais georgeus river ',
+    'But right now we are standing on the part of the wall, that is located in Beijing which also happens to be the capital city of China ',
+    'oh yeah I almost forgot. Ms Univers bought us train tickets to expeinces shanghais georgeus river ',
     'So let us get going!',
     'Welcome to Shanghai. The city with many skyscrapers and the tallest building in china being the Shanghai Tower. ',
     'Shanghai is also the the mouth of Yangtze river. The longest river in China, striking 6300km over the country  ',
@@ -124,16 +126,25 @@ class _TourWindowState extends State<TourWindow> {
   @override
   void initState() {
     super.initState();
+
     switch (widget.country.toLowerCase()) {
       case 'egypt':
         _dialogs = _dialogsEgypt;
         _characterName = 'Sharifa';
         _fontFamily = 'Quintessential';
+        _backgroundmusicPaths = List.filled(_dialogs.length, null);
+        _backgroundmusicPaths[0] = 'tours/egypt/bg-city.mp3';
+        _backgroundmusicPaths[21] = 'tours/egypt/bg-other.mp3';
+        _backgroundmusicPaths[34] = 'tours/egypt/nile.mp3';
+        _soundeffectsPaths = List.filled(_dialogs.length, null);
+        _soundeffectsPaths[20] = 'tours/egypt/Walking.mp3';
+        _soundeffectsPaths[33] = 'tours/egypt/taxi.mp3';
+
         _backgroundPaths = List.generate(_dialogs.length, (i) => 'bg1.png');
         _backgroundPaths[12] = 'bg13.png';
         _backgroundPaths[14] = 'bg15.png';
         _backgroundPaths[15] = 'bg15.png';
-        _backgroundPaths[20] = 'bg16.png';
+        _backgroundPaths[20] = 'bg16.png'; //walking
         _backgroundPaths[21] = 'bg17.png';
         _backgroundPaths[22] = 'bg18.png';
         _backgroundPaths[23] = 'bg18.png';
@@ -146,8 +157,8 @@ class _TourWindowState extends State<TourWindow> {
         _backgroundPaths[30] = 'bg18.png';
         _backgroundPaths[31] = 'bg18.png';
         _backgroundPaths[32] = 'bg17.png';
-        _backgroundPaths[33] = 'bg209.png';
-        _backgroundPaths[34] = 'bg21.png';
+        _backgroundPaths[33] = 'bg209.png'; //taxi
+        _backgroundPaths[34] = 'bg21.png'; //nile river music
         _backgroundPaths[35] = 'bg22.png';
         _backgroundPaths[36] = 'bg22.png';
         _backgroundPaths[37] = 'bg22.png';
@@ -173,21 +184,29 @@ class _TourWindowState extends State<TourWindow> {
         _dialogs = _dialogsMexico;
         _characterName = 'Alejo';
         _fontFamily = 'Mynerve';
+        _backgroundmusicPaths = List.filled(_dialogs.length, null);
+        _backgroundmusicPaths[0] = 'tours/mexico/bg-city.mp3';
+        _backgroundmusicPaths[6] = 'tours/maxico/charro.mp3';
+        _backgroundmusicPaths[12] = 'tours/mexico/bg-other.mp3';
+        _soundeffectsPaths = List.filled(_dialogs.length, null);
+        _soundeffectsPaths[10] = 'tours/mexico/Mexico - mariachi.mp3';
+        _soundeffectsPaths[12] = 'tours/mexico/Teleport.mp3';
+        _soundeffectsPaths[17] = 'tours/mexico/Teleport.mp3';
         _backgroundPaths = List.filled(_dialogs.length, 'bg0.png');
         _backgroundPaths[6] = 'bg1.png';
+        _backgroundPaths[7] = 'bg1.png';
         _backgroundPaths[8] = 'bg1.png';
         _backgroundPaths[9] = 'bg1.png';
-        _backgroundPaths[10] = 'bg1.png';
+        _backgroundPaths[10] = 'bg1.png'; //mariachi?
         _backgroundPaths[11] = 'bg1.png';
-        _backgroundPaths[12] = 'bg1.png';
+        _backgroundPaths[12] = 'bg2.png'; //teleport
         _backgroundPaths[13] = 'bg2.png';
         _backgroundPaths[14] = 'bg2.png';
         _backgroundPaths[15] = 'bg2.png';
         _backgroundPaths[16] = 'bg2.png';
-        _backgroundPaths[17] = 'bg2.png';
+        _backgroundPaths[17] = 'bg3.png'; //teleport
         _backgroundPaths[18] = 'bg3.png';
         _backgroundPaths[19] = 'bg3.png';
-        //_backgroundPaths[20] = 'bg3.png';
 
         // Customize per step when you have more assets
         _showCharacter = List.generate(_dialogs.length, (_) => true);
@@ -198,8 +217,14 @@ class _TourWindowState extends State<TourWindow> {
         _dialogs = _dialogsChina;
         _characterName = ' Luo Yan (洛妍)';
         _fontFamily = 'Special Elite';
-        _backgroundPaths = List.filled(_dialogs.length, 'bg1.jpg');
-        _backgroundPaths[11] = 'bg2.png';
+        _backgroundmusicPaths = List.filled(_dialogs.length, null);
+        _backgroundmusicPaths[0] = 'tours/china/bg-other.mp3';
+        _backgroundmusicPaths[11] =
+            'tours/china/bg-city.mp3'; //fix bug it stops after the step
+        _soundeffectsPaths = List.filled(_dialogs.length, null);
+        _soundeffectsPaths[10] = 'tours/china/Train.mp3';
+        _backgroundPaths = List.filled(_dialogs.length, 'bg1.png');
+        _backgroundPaths[11] = 'bg2.png'; //train sound effect
         _backgroundPaths[12] = 'bg2.png';
         _backgroundPaths[13] = 'bg2.png';
         _backgroundPaths[14] = 'bg2.png';
@@ -222,10 +247,62 @@ class _TourWindowState extends State<TourWindow> {
         _showCharacter = [false];
         _characterName = 'Ms. Universe';
     }
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _precacheCurrentandNext();
     });
+
+    _functionToStartOrChangeBackgroundMusic();
+
+    _audioPlayer = AudioPlayer();
+  }
+
+  final _backgruoundmusic = AudioPlayer()
+    ..setReleaseMode(
+      ReleaseMode.loop,
+    ); //Here we return an audioPlayer object before setting its release method
+
+  String?
+  _currentBackgroundMusicPath; //a handy variable to make our fuction easier and to prevent the wrong music playing
+
+  Future<void> _functionToStartOrChangeBackgroundMusic() async {
+    final newpath = _step < _backgroundmusicPaths.length
+        ? _backgroundmusicPaths[_step]
+        : null;
+    if (newpath != _currentBackgroundMusicPath) {
+      _currentBackgroundMusicPath = newpath;
+      if (newpath == null) {
+        //await _backgruoundmusic.stop();
+      } else {
+        try {
+          await _backgruoundmusic.play(AssetSource(newpath));
+        } catch (e) {
+          if (kDebugMode) {
+            print('bg music failed: $e');
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> _playSoundeffects() async {
+    if (_step >= _soundeffectsPaths.length) return;
+    final soundEffect = _soundeffectsPaths[_step];
+    if (soundEffect == null) return;
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.play(AssetSource(soundEffect));
+    } catch (e) {
+      if (kDebugMode) {
+        print('sound effect couldnt be played ($e)');
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    _backgruoundmusic.dispose();
+    super.dispose();
   }
 
   void _precacheCurrentandNext() async {
@@ -254,6 +331,7 @@ class _TourWindowState extends State<TourWindow> {
 
   AssetImage get _currentBackground {
     if (_step >= _backgroundPaths.length) {
+      //should not be running unless an error (we have it for safety)
       return AssetImage('assets/tours/bg0.jpg');
     }
     final imagepath =
@@ -364,9 +442,10 @@ class _TourWindowState extends State<TourWindow> {
                     if (_isCharacterBeingShowed)
                       Text(
                         _characterName,
-                        style: const TextStyle(
-                          fontSize: 28,
+                        style: TextStyle(
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
+                          fontFamily: _currentFontFamily,
                           color: Colors.white,
                         ),
                       ),
@@ -375,19 +454,19 @@ class _TourWindowState extends State<TourWindow> {
 
                     // Dialog text
                     SizedBox(
-                      height: 60,
+                      height: 70,
 
                       child: Text(
                         _currentDialogText,
                         style: TextStyle(
                           fontFamily: _currentFontFamily,
-                          fontSize: 20,
+                          fontSize: 25,
                           color: Colors.white,
                         ),
                       ),
                     ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
 
                     // Buttons row
                     Row(
@@ -407,6 +486,8 @@ class _TourWindowState extends State<TourWindow> {
                             if (!_isLastStep) {
                               setState(() => _step++);
                               _precacheCurrentandNext();
+                              _playSoundeffects();
+                              _functionToStartOrChangeBackgroundMusic();
                             } else {
                               Navigator.pushReplacement(
                                 context,

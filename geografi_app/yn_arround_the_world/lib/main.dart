@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yn_arround_the_world/friend_list.dart';
 import 'main_menu.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
@@ -30,9 +31,9 @@ class MyApp extends StatelessWidget {
             useMaterial3: false,
           ),
 
-          themeMode: ThemeMode.dark,
+          themeMode: ThemeMode.light,
 
-          home: MainMenu(),
+          home: FriendList(),
         );
       },
     );
