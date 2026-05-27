@@ -83,56 +83,60 @@ class _FriendListState extends State<FriendList> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(0),
-            alignment: Alignment.topLeft,
-            child: SegmentedButton(
-              segments: const <ButtonSegment<String>>[
-                ButtonSegment(
-                  value: 'Friendlist',
-                  label: Text('My global Friends'),
-                ),
-                ButtonSegment(
-                  value: 'Collected Souvenirs',
-                  label: Text('Collected Souvenirs'),
-                ),
-              ],
-              selected: _selected,
-              onSelectionChanged: (newSelection) {
-                setState(() => _selected = newSelection);
-              },
-            ),
-          ),
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : items.isEmpty
-                ? Center(
-                    child: Text(
-                      _selected.first == 'Friendlist'
-                          ? 'No friends unlocked yet!\nComplete quizzes to meet new people.'
-                          : 'No souvenirs collected yet!\nFinish tours and quizzes.',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-                      return Displaycard(
-                        // renamed widget
-                        title: item.title,
-                        info: item.description,
-                        image: item.imagePath,
-                      );
-                    },
+      body: Card(
+        surfaceTintColor: Colors.blueAccent,
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(0),
+              alignment: Alignment.topLeft,
+              child: SegmentedButton(
+                segments: const <ButtonSegment<String>>[
+                  ButtonSegment(
+                    value: 'Friendlist',
+                    label: Text('My global Friends'),
                   ),
-          ),
-        ],
+                  ButtonSegment(
+                    value: 'Collected Souvenirs',
+                    label: Text('Collected Souvenirs'),
+                  ),
+                ],
+                selected: _selected,
+                onSelectionChanged: (newSelection) {
+                  setState(() => _selected = newSelection);
+                },
+              ),
+            ),
+            Divider(color: Colors.black12),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : items.isEmpty
+                  ? Center(
+                      child: Text(
+                        _selected.first == 'Friendlist'
+                            ? 'No friends unlocked yet!\nComplete quizzes to meet new people.'
+                            : 'No souvenirs collected yet!\nFinish tours and quizzes.',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        final item = items[index];
+                        return Displaycard(
+                          // renamed widget
+                          title: item.title,
+                          info: item.description,
+                          image: item.imagePath,
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:yn_arround_the_world/friend_list.dart';
+import 'package:yn_arround_the_world/unlock_achievments.dart';
+import 'package:yn_arround_the_world/unlockablestuff.dart';
 import 'settings.dart';
 import 'quiz_question.dart';
 
@@ -174,13 +177,96 @@ class _QuizzState extends State<Quizz> {
       // get rewards based on the score
       if (score >= 50) {
         friendUnlocked = true;
+        _unlockFriend();
       }
       if (score >= 150) {
         souvenirUnlocked = true;
+        _unlockSouvenir();
       }
 
       // ADD THE LAST ACHIVEMENT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     });
+  }
+
+  Future<void> _unlockFriend() async {
+    UnlockableThing friend;
+    switch (widget.country.toLowerCase()) {
+      case 'egypt':
+        friend = UnlockableThing(
+          id: 'friend_sharifa',
+          title: 'Sharifa',
+          description: 'Your fierce guide through Cairo and the Pyramids',
+          imagePath: 'assets/tours/egypt/Guide.png',
+          isItAfriend: true,
+        );
+        break;
+
+      case 'mexico':
+        friend = UnlockableThing(
+          id: 'friend_alejo',
+          title: 'Alejo',
+          description: 'Your charro friend from Mexico City',
+          imagePath: 'assets/tours/mexico/Guide.png',
+          isItAfriend: true,
+        );
+        break;
+
+      case 'china':
+        friend = UnlockableThing(
+          id: 'friend_lou_yan',
+          title: 'Lou Yan',
+          description: 'Your enthusiastic guide on the Great Wall',
+          imagePath: 'assets/tours/china/Guide.png',
+          isItAfriend: true,
+        );
+        break;
+
+      default:
+        return;
+    }
+    await UnlockAchievment.unlockItem(friend);
+  }
+
+  Future<void> _unlockSouvenir() async {
+    UnlockableThing souvenir;
+    switch (widget.country.toLowerCase()) {
+      case 'egypt':
+        souvenir = UnlockableThing(
+          id: 'souvenir_egypt',
+          title: 'Handmade Stone Pyramid',
+          description:
+              'A one of a kind timeless piece, and a beautifull remiender of ancient crafts',
+          imagePath: 'assets/tours/egypt/souvenir.png',
+          isItAfriend: false,
+        );
+        break;
+
+      case 'mexico':
+        souvenir = UnlockableThing(
+          id: 'souvenir_mexico',
+          title: 'Hand Painted Ceramic Skull',
+          description:
+              'Celebrate the spirit of Día de los Muertos with this! Its vibrant colors sure remind you of the cheerful mexican culture',
+          imagePath: 'assets/tours/mexico/souvenir.png',
+          isItAfriend: false,
+        );
+        break;
+
+      case 'china':
+        souvenir = UnlockableThing(
+          id: 'souvenir_china',
+          title: 'Jade Dragon Pendant',
+          description:
+              'Symbol of strength from ancient China. The shoothing green color reminds you of the chineese mountains',
+          imagePath: 'assets/tours/china/souvenir.webp',
+          isItAfriend: false,
+        );
+        break;
+
+      default:
+        return;
+    }
+    await UnlockAchievment.unlockItem(souvenir);
   }
 
   // go to next question and resets the showResult and selectedAnswer
@@ -230,12 +316,13 @@ class _QuizzState extends State<Quizz> {
           ),
           IconButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('not available yet')),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => FriendList()),
               );
             },
             icon: Icon(Icons.emoji_people),
-            tooltip: 'Friend list',
+            tooltip: 'Collection',
           ),
           IconButton(
             onPressed: () {

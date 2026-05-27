@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yn_arround_the_world/friend_list.dart';
 import 'tour_window.dart'; // Import other views as needed
 import 'settings.dart';
 import 'marker_blueprint.dart'; // For TravelLocation
@@ -64,7 +65,7 @@ class _GeografiAppState extends State<GeografiApp> {
   // Call this before rebuilding `FlutterMap` with options that change
   // bounds/zoom limits to avoid the "MapCamera is no longer within the
   // cameraConstraint after an option change" exception.
-  //this isnt used rn
+  /*this isnt used rn
   void _ensureCameraMatchesConstraint(MapOptions newOptions) {
     try {
       final currentCamera = _mapController.camera;
@@ -81,7 +82,7 @@ class _GeografiAppState extends State<GeografiApp> {
     } catch (e) {
       // If the controller isn't ready or API differs, ignore safely.
     }
-  }
+  }*/
 
   final List<TravelLocation> travelSpots = [
     TravelLocation(
@@ -178,12 +179,13 @@ class _GeografiAppState extends State<GeografiApp> {
           ),
           IconButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('not available yet')),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => FriendList()),
               );
             },
             icon: Icon(Icons.emoji_people),
-            tooltip: 'Friend list',
+            tooltip: 'Collection',
           ),
         ],
       ),
@@ -232,7 +234,7 @@ class _GeografiAppState extends State<GeografiApp> {
                             height: 60,
                             child: GestureDetector(
                               //this makes it possible to click on the marker
-                              onDoubleTap: () {
+                              onTap: () {
                                 showDialog(
                                   context: context,
                                   builder: (dialogcontext) => AlertDialog(
@@ -245,7 +247,7 @@ class _GeografiAppState extends State<GeografiApp> {
                                     ),
                                     actions: [
                                       TextButton(
-                                        child: const Text('close'),
+                                        child: const Text('Close'),
                                         onPressed: () =>
                                             Navigator.pop(dialogcontext),
                                       ),
@@ -306,6 +308,7 @@ class _GeografiAppState extends State<GeografiApp> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Dialog(
+                      backgroundColor: Theme.of(context).primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),
                       ),

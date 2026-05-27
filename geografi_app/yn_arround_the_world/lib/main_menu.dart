@@ -1,6 +1,7 @@
 //settings, view map, view my character, friend list
 
 import 'package:flutter/material.dart';
+import 'package:yn_arround_the_world/friend_list.dart';
 import 'map.dart';
 import 'settings.dart';
 
@@ -24,8 +25,8 @@ class _MainMenuState extends State<MainMenu> {
       'Welcome! whats your name?',
       'Nice to meet you \$user, welcome to planet earth',
       'let me show you around here.',
-      'This is the main menu, here you can decide to customize your avatar by pressing the account button', //if readerText == TutorialDilogs[2] disable all icons ecxept for account
-      'You can also acsses your newly found friends by pressing on your global friend list',
+      'This is the main menu, here you can decide to customize your avatar by pressing the account button in the app bar', //if readerText == TutorialDilogs[2] disable all icons ecxept for account
+      'You can also acsses your newly found friends by pressing on the waving person icon',
       'To start press the Earth',
     ];
   }
@@ -97,12 +98,13 @@ class _MainMenuState extends State<MainMenu> {
           ),
           IconButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('not available yet')),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FriendList()),
               );
             },
             icon: Icon(Icons.emoji_people),
-            tooltip: 'Friend list',
+            tooltip: 'Collection',
           ),
           IconButton(
             onPressed: () {
@@ -139,7 +141,7 @@ class _MainMenuState extends State<MainMenu> {
             child: GestureDetector(
               child: ClipOval(
                 child: Image.asset(
-                  'assets/tours/globe.webp',
+                  'assets/tours/globe.png',
                   width: 400,
                   height: 400,
                   fit: BoxFit.cover,
@@ -186,8 +188,10 @@ class _MainMenuState extends State<MainMenu> {
                               padding: const EdgeInsets.all(8.0),
                               child: SizedBox(
                                 height: 60,
-                                width: double.maxFinite,
-                                child: Text(_currentText),
+                                child: Text(
+                                  _currentText,
+                                  style: const TextStyle(fontSize: 20),
+                                ),
                               ),
                             ),
                             Divider(

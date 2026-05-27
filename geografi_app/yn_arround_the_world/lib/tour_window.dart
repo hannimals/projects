@@ -110,6 +110,7 @@ class _TourWindowState extends State<TourWindow> {
     'But right now we are standing on the part of the wall, that is located in Beijing which also happens to be the capital city of China ',
     'oh yeah I almost forgot. Ms Univers bought us train tickets to expeinces shanghais georgeus river ',
     'So let us get going!',
+    'You are amazed at the speed of the chineese bullet trains!!',
     'Welcome to Shanghai. The city with many skyscrapers and the tallest building in china being the Shanghai Tower. ',
     'Shanghai is also the the mouth of Yangtze river. The longest river in China, striking 6300km over the country  ',
     'Funny thing. My name means beautiful Yan from the Luo river which is a tributary of the Yangtze river. ',
@@ -186,7 +187,7 @@ class _TourWindowState extends State<TourWindow> {
         _fontFamily = 'Mynerve';
         _backgroundmusicPaths = List.filled(_dialogs.length, null);
         _backgroundmusicPaths[0] = 'tours/mexico/bg-city.mp3';
-        _backgroundmusicPaths[6] = 'tours/maxico/charro.mp3';
+        _backgroundmusicPaths[6] = 'tours/mexico/charro.mp3';
         _backgroundmusicPaths[12] = 'tours/mexico/bg-other.mp3';
         _soundeffectsPaths = List.filled(_dialogs.length, null);
         _soundeffectsPaths[10] = 'tours/mexico/Mexico - mariachi.mp3';
@@ -223,8 +224,8 @@ class _TourWindowState extends State<TourWindow> {
             'tours/china/bg-city.mp3'; //fix bug it stops after the step
         _soundeffectsPaths = List.filled(_dialogs.length, null);
         _soundeffectsPaths[10] = 'tours/china/Train.mp3';
-        _backgroundPaths = List.filled(_dialogs.length, 'bg1.png');
-        _backgroundPaths[11] = 'bg2.png'; //train sound effect
+        _backgroundPaths = List.filled(_dialogs.length, 'bg1.jpg');
+        _backgroundPaths[11] = 'train.jpeg'; //train sound effect
         _backgroundPaths[12] = 'bg2.png';
         _backgroundPaths[13] = 'bg2.png';
         _backgroundPaths[14] = 'bg2.png';
@@ -235,17 +236,22 @@ class _TourWindowState extends State<TourWindow> {
         _backgroundPaths[19] = 'bg2.png';
         _backgroundPaths[20] = 'bg2.png';
         _backgroundPaths[21] = 'bg2.png';
+        _backgroundPaths[22] = 'bg2.png';
         _showCharacter = List.generate(_dialogs.length, (_) => true);
         _showCharacter[0] = false; // Confusion on wall
         _showCharacter[1] = false;
+        _showCharacter[11] = false;
+
         break;
 
       default:
         // Fallback
         _dialogs = ['No tour available for ${widget.country} yet.'];
-        _backgroundPaths = ['bg0.jpg'];
+        _backgroundPaths = ['assets/tours/bg0.jpg'];
         _showCharacter = [false];
         _characterName = 'Ms. Universe';
+        _backgroundmusicPaths = [null];
+        _fontFamily = 'SegoeUI';
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _precacheCurrentandNext();
@@ -411,11 +417,11 @@ class _TourWindowState extends State<TourWindow> {
           if (_isCharacterBeingShowed)
             Positioned(
               bottom: 0,
-              right: 0,
+              right: 90,
               left: 0,
               height:
                   MediaQuery.of(context).size.height *
-                  0.75, //adjust asset to our flutterview size (mediaQueary.of(context))
+                  1, //adjust asset to our flutterview size (mediaQueary.of(context))
               child: Image.asset(
                 'assets/tours/${widget.country.toLowerCase()}/Guide.png',
                 fit: BoxFit.fitHeight,

@@ -29,7 +29,7 @@ class Displaycard extends StatelessWidget {
                   image,
                   width: 100,
                   height: 100,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fitHeight,
                   errorBuilder: (_, __, ___) => const Icon(
                     Icons.error,
                     size: 60,

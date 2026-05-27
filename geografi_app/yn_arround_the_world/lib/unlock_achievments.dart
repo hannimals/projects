@@ -1,6 +1,4 @@
-import 'dart:collection';
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'unlockablestuff.dart';
 
@@ -25,8 +23,8 @@ class UnlockAchievment {
             .map((e) => UnlockableThing.fromJson(e))
             .toList(); //we make the iterable into a list
 
-    if (list.any((e) => e.id == item.id))
-      return; // we chect that the element isnt allready been decoded (no duplicates)
+    if (list.any((e) => e.id == item.id)) return;
+    // we chect that the element isnt allready been decoded (no duplicates)
     list.add(item);
     final updatedJson = jsonEncode(list.map((e) => e.toJson()).toList());
     // we add the element from the list creating an updated json list of elements

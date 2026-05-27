@@ -58,6 +58,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
                   await prefs.remove('mapTutorialCompleted');
+                  await prefs.remove('unlocked_friends');
+                  await prefs.remove('unlocked_souvenirs');
                   if (!mounted) return;
 
                   ScaffoldMessenger.of(context).showSnackBar(

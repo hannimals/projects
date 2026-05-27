@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:yn_arround_the_world/friend_list.dart';
 import 'main_menu.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
 
           theme: ThemeData(
             colorScheme: lightDynamic,
-            primaryColor: Color.fromRGBO(57, 63, 81, 100),
+            primaryColor: Color.fromRGBO(193, 208, 255, 1),
             brightness: Brightness.light,
             useMaterial3: true,
           ),
@@ -33,7 +32,7 @@ class MyApp extends StatelessWidget {
 
           themeMode: ThemeMode.light,
 
-          home: FriendList(),
+          home: MainMenu(),
         );
       },
     );
